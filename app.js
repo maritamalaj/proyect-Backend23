@@ -1,69 +1,98 @@
+const fs = require('fs')
+
+
+
 class ProductManager{
-    constructor (title, description, price, thumbnail, code, stock, id) {
-        this.products = [];
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.thumbnail = thumbnail;
-        this.code = code;
-        this.stock = stock;
-        this.id = id;
+    static globalId = 0
+    constructor (fileName) {
+        this.products= []
+        this.path = './files'
+        this.fileName = this.path + fileName
 }
 
-addProduct (product){
-    for (const element of this.products){
-        if (product.stock < 0 || product.price < 0 || product.code === "" || product.title === "" || product.description === "" || product.thumbnail === "") {
-            return { error: "All fields are required" }
-        }
-        else
-            if (element.code === product.code) {
-                return { error: "This product already exist." }
-
-            }
-    }
-    product.id = Math.random().toString(9);
-    this.products.push(product)
-    return this.products
-}
-
-getProducts() {
-    return this.products
-}
-
-getProductById(id) {
-    for (const element of this.products) {
-        if (element.id === id) {
-            return element.title
-        }
-    }
-    return { error: "Not Found" }
-}
-}
-
-//Test
-
-const productManager = new ProductManager
-
-console.log("Lista Vacia");
-console.log(productManager.getProducts);
-
-console.log("AgregoProducto");
-console.log(productManager.addProduct({ title: "almohadon", description: "some description", price: 3300, thumbnail: "imagen", code: "abc123", stock: 15 }));
+//methods
 
 
-console.log("Lista con un producto");
-console.log(productManager.getProducts());
 
+addProduct = async  (title, description, price, thumbnail, code, stock) => {
+    //create dir 
+    await fs.promises.mkdir(this.path, { recursive: true })
 
-console.log("Agrego un Producto con el mismo codigo");
-console.log(productManager.addProduct({ title: "almohadon", description: "some description", price: 3300, thumbnail: "imagen", code: "abc123", stock: 15 }));
-
-console.log("Agrego un producto con un campo vacio");
-console.log(productManager.addProduct({ title: "", description: "some description", price: 3300, thumbnail: "imagen", code: "abc123", stock: 15 }));
-
-console.log("Busco Producto por Id y funcionma");
-console.log(productManager.getProductById(productManager.products[0].id));
-
-console.log("Busco un producto por id y no funciona");
-console.log(productManager.getProductById("123"));
+    if (!(title, description, price, thumbnail, code, stock)) {
+        console.log('All fields are required')
+    } else 
+          if (this.products.find ((prod)=> prod.code == code)){
+        console.log('This product already exists.')
     
+
+    
+    }else{
+        const prodId = ProductManager.globalId ++
+        this.products.push ({
+            title,
+            description,
+            price,
+            thumbnail,
+            code,
+            stock,
+            prodId,
+        })
+        await fs.promises.writeFile(this.fileName, JSON.stringify (this.products))
+        console.log('Product added');
+
+    }
+}
+ 
+
+getProducts = async () => {
+    let result = await fs.promises.readFile(this.fileName)
+    let paresedResult = await json.parse (result)
+    console.log('Read file');
+    return paresedResult
+}
+
+getProductById = async(id) => {
+    let result = await fs.promises.readFile(this.fileName)
+    let paresedResult = await JSON.parse(result)
+
+    const filteredArr = paresedResult.find(
+        (product) => product.prodId == id
+    )
+    return filteredArr ? filteredArr : ''
+  }
+    
+       
+}
+
+updateProductById = async (id, updatedData) => {
+    let result = await fs.promises.readFile(this.fileName)
+    let paresedResult = await JSON.parse(result)
+
+    if (await this.getProductById(id)) {
+      const newArr = paresedResult.map((item) => {
+        return id == item.prodId ? { ...item, ...updatedData } : item
+        console.log('Product updated ')
+      })
+      await fs.promises.writeFile(this.fileName, JSON.stringify(newArr))
+    } else {
+      console.log(`Product ID ${id} does not exist`)
+    }
+  
+
+  deleteProductById = async (id) => {
+    let result = await fs.promises.readFile(this.fileName)
+    let paresedResult = await JSON.parse(result)
+
+    if (await this.getProductById(id)) {
+      const newArr = paresedResult.filter((item) => item.prodId !== id)
+      await fs.promises.writeFile(this.fileName, JSON.stringify(newArr))
+      console.log('Product deleted ')
+    } else {
+        console.log(`Product ID ${id} does not exist`)
+    }
+  }
+
+}
+
+
+
