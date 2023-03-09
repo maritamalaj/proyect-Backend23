@@ -1,15 +1,13 @@
-const fs = require('fs')
-
+const fs = require('fs');
 
 
 class ProductManager{
-    static globalId = 0
-    constructor (fileName) {
-        this.products= []
-        this.path = './files'
-        this.fileName = this.path + fileName
+  static globalId = 0
+  constructor (fileName) {
+      this.products= []
+      this.path = './files'
+      this.fileName = this.path + fileName
 }
-
 //methods
 
 
@@ -95,4 +93,4 @@ updateProductById = async (id, updatedData) => {
 }
 
 
-
+module.exports = ProductManager
