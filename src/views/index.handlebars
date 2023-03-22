@@ -1,0 +1,20 @@
+<div>
+    <h1>Hola {{nane}}</h1>
+
+    {{#if condition}}
+         {{#each people}}
+         <div>
+            <p>Nombre:{{this.name}}</p>
+            <p>precio:{{this.price}}</p>
+         </div>
+       
+        {{/each}}
+
+        {{else}}
+           <p>no tienes permiso para ver la lista</p>
+       
+    {{/if}}
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

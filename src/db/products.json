@@ -1,4 +1,5 @@
-{"id": "1","title": "espejo","description": "espejo redondo de yute 60cm","price": 3500,"thumbnails": "http://www.img.espejoyute.com", "code": "esp1","stock": 110,"category":"decoyespejo", "status":"true"},
+[
+{"id": "1","title": "espejo","description": "espejo redondo de yute 60cm","price": 3500,"thumbnails": "http://www.img.espejoyute.com", "code": "esp1","stock": 110,"category":"decoyespejo", "status":true},
 {"id": "2","title": "manta","description":"manta pie de cama de tussor y borlas 50x300  cm", "price": 5500,"thumbnails": "http://www.img.manta.com",  "code": "manta1","stock": 15, "category": "decobed", "status":true},
 {"id": "3","title": "tapiz","description": " tapiz en macrame crudo 30x50cm","price": 4500,"thumbnails": "http://www.img.tapiz.com",  "code": "tapiz1","stock": 30,"category":"decohome","status": true },
 {"id":"4", "title": "Espejo Mariam","description": "Espejo tejido en Yute 40cm", "price": 2900, "thumbnails": "http://www.img.esp2.com",  "code": "esp2", "stock": 10,"category":"decoyespejo","status": true},

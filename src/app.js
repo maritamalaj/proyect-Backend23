@@ -1,41 +1,67 @@
-const express = require ('express');
-const ProductManager = require ('../ProductManager')
-const app = express ();
+import express from 'express';
+import productsRouter from './routes/products.router.js'
+import cartsRouter from './routes/carts.router.js'
+import handlebars from 'express-handlebars'
+import __dirname from './utils.js';
+import {Server} from 'socket.io'
+
+//instancia  exp
+const app = express ()
+// instancia serv
 const PORT = 8080
-const productManager = ProductManager ('./files/products.json')
+app.listen(PORT, ()=>{
+    console.log(`Server run on ${PORT}`);
+})
 
-app.use(express.urlencoded({extended:true}))
-
-pp.get ("/", async (req, res)=> {
-    const products = await productManager.getProducts();
-    const {limit} = req.query
-    if (limit) return res.json(products.slice(0,limit));
-    else return res.json(products);
+const httpServer = app.listen(PORT, () => {
+    console.log("Servidor escuchando por el puerto: " + PORT);
 });
 
-app.get("/products/:pid", async (req,res)=>{
-    const products = await productManager.getProducts();
-    const {pid} = req.parms
-    const product = products.find (product => product.id === pid);
+// const socketServer = new Server
+const socketServer = new Server(httpServer);
 
-    if (product) return res.status(200).json(product);
-    else return res.status(404).json ({message : "product not found"});
-
-});
-
-app.listen(PORT,()=>{
-    console.log (`Server runing pn port ${PORT}`);
-
-});
+// conf servidor para recibir obj json.
+app.use (express.json());
+app.use(express.urlencoded({extended:true}));
+//carpeta public
+app.use(express.static (__dirname + '/public'))
 
 
 
+//rutas - serv pa recibir obj Json
+app.use ('/api/products', productsRouter);
+app.use ('api/carts/', cartsRouter);
+
+// conf Motor de pl HBS
+app.engine('handlebars', handlebars.engine());
+app.set('views', __dirname + "/views");
+app.set('view engine', 'handlebars');
+
+//Utilizamos este Middleware genérico para enviar la instancia del servidor de Socket.io a las routes
+app.use((req,res,next)=>{
+    req.io = socketServer
+    next()
+})
+
+
+
+// Declaramos el router
 
 
 
 
+// Abrimos el canal de comunicacion
+socketServer.on('connection', socket=>{
+console.log(socket.id);
 
-app.listen (PORT, () =>{
-    console.log(`Server on port : ${PORT}`);
-  })
-  
+// escuchamos al cliente
+socket.on('msg_front', message=>{
+   console.log(message);
+})
+
+socket.emit('msg_back', 'Mesaje enviado desde el back!!')
+
+socket.broadcast.emit("evento_para_todos_excepto_socket_actual", "Este evento es para todos los sockets, menos el socket desde que se emitió el mensaje!");
+    
+socketServer.emit("evento_para_todos", "Evento para todos los Sockets!")
+})
