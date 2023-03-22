@@ -4,6 +4,9 @@ import cartsRouter from './routes/carts.router.js'
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js';
 import {Server} from 'socket.io'
+import productsRouter from './routes/products.router.js';
+import cartsRouter from './routes/carts.router.js';
+
 
 //instancia  exp
 const app = express ()
